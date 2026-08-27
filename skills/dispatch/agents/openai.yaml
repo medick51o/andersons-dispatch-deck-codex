@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Dispatch"
+  short_description: "Codex-native multi-model orchestration"
+  default_prompt: "Use $dispatch to orchestrate this coding mission with lean delegation and independent review."

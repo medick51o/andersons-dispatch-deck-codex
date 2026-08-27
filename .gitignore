@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+.playpen/
+mcp-seats/.playpen/
+scratch/*
+!scratch/README.md
