@@ -163,10 +163,6 @@ def _extract_json(raw):
 
 def run_cursor(prompt, session_id=None, cwd=None, model=None, always_approve=False,
                spend_credits=False):
-    exe = find_cursor_agent()
-    if not exe:
-        return True, ("Cursor CLI not found. Install it, then `cursor-agent login`. "
-                      "(Windows: %LOCALAPPDATA%\\cursor-agent\\cursor-agent.cmd)")
     chosen, klass = model or DEFAULT_MODEL, meter_class(model or DEFAULT_MODEL)
 
     if klass == "UNKNOWN":
@@ -222,6 +218,13 @@ def run_cursor(prompt, session_id=None, cwd=None, model=None, always_approve=Fal
             return True, (f"{CURSOR_BANNER} 🛑 PREFLIGHT REFUSED — dispatch would spend for "
                           "nothing\n\n" + "\n".join(f"  • {p}" for p in problems) +
                           "\n\nPoint the seat at a repo with real source, or run read-only.")
+
+    # Transport discovery comes after every refusal that can be decided locally. This keeps
+    # guard canaries meaningful on machines and CI runners that do not install Cursor.
+    exe = find_cursor_agent()
+    if not exe:
+        return True, ("Cursor CLI not found. Install it, then `cursor-agent login`. "
+                      "(Windows: %LOCALAPPDATA%\\cursor-agent\\cursor-agent.cmd)")
 
     # The Windows CLI is a .cmd shim: no caller-controlled string may reach argv.
     spill_path = None
@@ -368,7 +371,7 @@ def _tool_call(name, args):
 
 
 def main():
-    core.serve("wmw-cursor", "2.7.0", TOOLS, _tool_call, startup=_ensure_playpen)
+    core.serve("wmw-cursor", "2.7.1", TOOLS, _tool_call, startup=_ensure_playpen)
 
 
 if __name__ == "__main__":

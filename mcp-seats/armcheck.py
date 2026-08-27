@@ -8,17 +8,12 @@ English, to write a file and then check the disk — which means they spend real
 every run. Run them before a release, after touching a seat, or when a guard changes.
 Running them on every routine check is a tax that buys the same answer twice.
 """
-import json, subprocess, sys, os, glob, io, shutil, tempfile
+import json, subprocess, sys, os, glob, io, shutil
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 SEATS = os.path.dirname(os.path.abspath(__file__))
 CI = "--ci" in sys.argv or os.environ.get("CI", "").lower() in {"1", "true", "yes"}
-DEFAULT_PLAYPEN = (
-    os.path.join(tempfile.gettempdir(), "codex-dispatch-playpen")
-    if CI and os.name != "nt"
-    else os.path.join(SEATS, ".playpen", "cursor")
-)
 PLAYPEN = os.path.abspath(os.environ.get(
-    "WMW_CURSOR_PLAYPEN", DEFAULT_PLAYPEN))
+    "WMW_CURSOR_PLAYPEN", os.path.join(SEATS, ".playpen", "cursor")))
 DEEP = "--deep" in sys.argv
 
 def seat(server):
