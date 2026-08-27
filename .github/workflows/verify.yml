@@ -1,0 +1,23 @@
+name: verify
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  free-guards:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile Python
+        run: python -m compileall mcp-seats
+      - name: Run free adapter and guard checks
+        run: python mcp-seats/armcheck.py --ci
+      - name: Run offline council SDK regression suite
+        run: python mcp-seats/sdk/council_selftest.py
